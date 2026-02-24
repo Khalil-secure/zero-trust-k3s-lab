@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" width="400" height="160">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0c10"/>
+      <stop offset="100%" style="stop-color:#0f1520"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d4ff"/>
+      <stop offset="60%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#ff6b35"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="barclip">
+      <rect x="28" y="112" width="0" height="12" rx="6">
+        <animate attributeName="width" from="0" to="220" dur="2.5s" ease="ease-in-out" repeatCount="indefinite"/>
+      </rect>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="160" rx="16" fill="url(#bg)"/>
+  <rect width="400" height="160" rx="16" fill="none" stroke="#1e2632" stroke-width="1.5"/>
+
+  <!-- Gear icon (left) -->
+  <g transform="translate(38, 52)" filter="url(#glow)">
+    <animateTransform attributeName="transform" type="rotate" from="0 38 52" to="360 38 52" dur="6s" repeatCount="indefinite"/>
+    <circle cx="0" cy="0" r="10" fill="none" stroke="#00d4ff" stroke-width="2"/>
+    <circle cx="0" cy="0" r="4" fill="#00d4ff"/>
+    <!-- Teeth -->
+    <rect x="-2" y="-14" width="4" height="6" rx="1" fill="#00d4ff"/>
+    <rect x="-2" y="8" width="4" height="6" rx="1" fill="#00d4ff"/>
+    <rect x="8" y="-2" width="6" height="4" rx="1" fill="#00d4ff"/>
+    <rect x="-14" y="-2" width="6" height="4" rx="1" fill="#00d4ff"/>
+    <rect x="5.5" y="-10.5" width="4" height="6" rx="1" fill="#00d4ff" transform="rotate(45 7.5 -7.5)"/>
+    <rect x="-9.5" y="-10.5" width="4" height="6" rx="1" fill="#00d4ff" transform="rotate(-45 -7.5 -7.5)"/>
+    <rect x="5.5" y="4.5" width="4" height="6" rx="1" fill="#00d4ff" transform="rotate(-45 7.5 7.5)"/>
+    <rect x="-9.5" y="4.5" width="4" height="6" rx="1" fill="#00d4ff" transform="rotate(45 -7.5 7.5)"/>
+  </g>
+
+  <!-- WORK IN PROGRESS text -->
+  <text x="72" y="44" font-family="'Courier New', monospace" font-size="11" font-weight="700"
+    fill="#64748b" letter-spacing="4" text-transform="uppercase">WORK IN PROGRESS</text>
+
+  <!-- Main label -->
+  <text x="70" y="76" font-family="'Courier New', monospace" font-size="28" font-weight="900"
+    fill="#e2e8f0" letter-spacing="-0.5">
+    <tspan fill="#00d4ff">W</tspan><tspan fill="#e2e8f0">IP</tspan>
+  </text>
+
+  <!-- Blinking cursor -->
+  <rect x="126" y="54" width="3" height="26" rx="1" fill="#00d4ff">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Sub-label -->
+  <text x="70" y="98" font-family="'Courier New', monospace" font-size="11" fill="#475569" letter-spacing="1">
+    building something awesome...
+  </text>
+
+  <!-- Progress bar track -->
+  <rect x="28" y="112" width="220" height="12" rx="6" fill="#1e2632"/>
+
+  <!-- Progress bar fill animated -->
+  <rect x="28" y="112" width="220" height="12" rx="6" fill="url(#bar)" opacity="0.9">
+    <animate attributeName="width" values="0;150;220;150;0" dur="3s" repeatCount="indefinite" calcMode="spline"
+      keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"/>
+  </rect>
+
+  <!-- Progress bar shimmer -->
+  <rect x="28" y="112" width="220" height="12" rx="6" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.15"/>
+
+  <!-- Percentage text -->
+  <text x="262" y="123" font-family="'Courier New', monospace" font-size="11" fill="#00d4ff" font-weight="700">
+    <animate attributeName="textContent" values="0%;20%;45%;62%;80%;62%;45%;20%;0%" dur="3s" repeatCount="indefinite"/>
+    0%
+  </text>
+
+  <!-- Three dots loading -->
+  <circle cx="320" cy="52" r="4" fill="#00d4ff">
+    <animate attributeName="opacity" values="1;0.2;0.2" dur="1.2s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="4;2;4" dur="1.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="338" cy="52" r="4" fill="#a855f7">
+    <animate attributeName="opacity" values="0.2;1;0.2" dur="1.2s" begin="0.4s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="2;4;2" dur="1.2s" begin="0.4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="356" cy="52" r="4" fill="#ff6b35">
+    <animate attributeName="opacity" values="0.2;0.2;1" dur="1.2s" begin="0.8s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="2;2;4" dur="1.2s" begin="0.8s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Status tag -->
+  <rect x="310" y="78" width="66" height="22" rx="4" fill="rgba(255,107,53,0.15)" stroke="#ff6b35" stroke-width="1"/>
+  <text x="343" y="93" font-family="'Courier New', monospace" font-size="10" fill="#ff6b35"
+    font-weight="700" text-anchor="middle" letter-spacing="1">IN DEV</text>
+
+</svg>
