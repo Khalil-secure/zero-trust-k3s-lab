@@ -1,0 +1,50 @@
+# WireGuard Site-to-Site VPN Configuration
+# Zero Trust K8s Lab — Secure tunnel between local dev and Oracle Cloud
+
+# ── SERVER (Oracle Cloud) ──
+# Save as: /etc/wireguard/wg0.conf on the Oracle Cloud VM
+
+[Interface]
+# Server private key — generate with: wg genkey
+PrivateKey = <SERVER_PRIVATE_KEY>
+Address = 10.10.0.1/24
+ListenPort = 51820
+
+# Enable IP forwarding for k8s traffic
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+# Local dev machine peer
+[Peer]
+# Client public key — generate with: wg pubkey < client_private_key
+PublicKey = <CLIENT_PUBLIC_KEY>
+AllowedIPs = 10.10.0.2/32
+
+# ── CLIENT (Local dev machine) ──
+# Save as: /etc/wireguard/wg0.conf on local machine
+
+# [Interface]
+# PrivateKey = <CLIENT_PRIVATE_KEY>
+# Address = 10.10.0.2/24
+# DNS = 10.0.0.1
+#
+# [Peer]
+# PublicKey = <SERVER_PUBLIC_KEY>
+# Endpoint = <ORACLE_VM_PUBLIC_IP>:51820
+# AllowedIPs = 10.0.0.0/16, 10.10.0.0/24
+# PersistentKeepalive = 25
+
+# ── SETUP COMMANDS ──
+# On Oracle Cloud VM:
+# apt-get install -y wireguard
+# wg genkey | tee server_private.key | wg pubkey > server_public.key
+# cp wg0.conf /etc/wireguard/wg0.conf
+# systemctl enable --now wg-quick@wg0
+#
+# On local machine:
+# wg genkey | tee client_private.key | wg pubkey > client_public.key
+# wg-quick up wg0
+#
+# Verify tunnel:
+# ping 10.10.0.1
+# wg show

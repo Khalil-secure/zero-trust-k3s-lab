@@ -1,0 +1,120 @@
+# ── ISTIO mTLS — STRICT MODE FOR ALL NAMESPACES ──
+# Every service must present a valid certificate
+# Plaintext traffic is rejected
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default-mtls
+  namespace: frontend
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default-mtls
+  namespace: backend
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default-mtls
+  namespace: database
+spec:
+  mtls:
+    mode: STRICT
+
+# ── AUTHORIZATION POLICIES ──
+# frontend can only call backend /api/* endpoints
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: frontend-to-backend
+  namespace: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  rules:
+    - from:
+        - source:
+            principals:
+              - "cluster.local/ns/frontend/sa/frontend-sa"
+      to:
+        - operation:
+            methods: ["GET", "POST"]
+            paths: ["/api/*"]
+
+# backend can only call database on specific operations
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: backend-to-database
+  namespace: database
+spec:
+  selector:
+    matchLabels:
+      app: database
+  rules:
+    - from:
+        - source:
+            principals:
+              - "cluster.local/ns/backend/sa/backend-sa"
+
+# Deny everything else
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-all
+  namespace: frontend
+spec:
+  {}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-all
+  namespace: backend
+spec:
+  {}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-all
+  namespace: database
+spec:
+  {}
+
+# ── DESTINATION RULES — enforce mTLS on outbound ──
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: mtls-backend
+  namespace: frontend
+spec:
+  host: "backend.backend.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: mtls-database
+  namespace: backend
+spec:
+  host: "database.database.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL

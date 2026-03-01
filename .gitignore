@@ -1,0 +1,27 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+!terraform.tfvars.example
+
+# Oracle Cloud credentials
+*.pem
+*.key
+~/.oci/
+
+# WireGuard keys
+*_private.key
+*_public.key
+wg0.conf
+
+# Kubernetes secrets
+*secret*.yaml
+*credentials*.yaml
+kubeconfig
+*.kubeconfig
+
+# Local
+.DS_Store
+*.log
